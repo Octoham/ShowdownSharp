@@ -50,3 +50,10 @@ public class Program
 	}
 }
 ```
+
+### Contact
+If you need to contact me, my discord is @octoham
+
+
+### Credits
+Octoham - Everything
