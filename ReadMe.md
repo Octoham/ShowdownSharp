@@ -21,7 +21,7 @@ Build with the Release configuration
 ```sh
 dotnet build -c Release
 ```
-Then, simply add the .dll file as a dependency to any C# project
+Then, simply add the .nupkg file as a dependency to any C# project, adding as a .dll file does not work
 
 ### Usage
 Creating a client is simple. Here is an example for a fully functioning client that only takes 23 lines of code
