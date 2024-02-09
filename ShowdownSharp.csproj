@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>ShowdownSharp</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Octoham</Authors>
+    <PackageProjectUrl>https://github.com/Octoham/ShowdownSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Octoham/ShowdownSharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Title>ShowdownSharp</Title>
+    <Version>0.0.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+</Project>
