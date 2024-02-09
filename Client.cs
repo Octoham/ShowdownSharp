@@ -277,7 +277,7 @@ namespace ShowdownSharp
         public Client Client => client;
         public delegate void ChatMessageHandler(object sender, ChatMessageData data);
         public event ChatMessageHandler OnMessageReceive;
-        public void HandleMessage(ChatMessageData data)
+        internal void HandleMessage(ChatMessageData data)
         {
             OnMessageReceive?.Invoke(this, data);
             return;
