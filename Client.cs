@@ -14,6 +14,7 @@ namespace ShowdownSharp
         private ClientWebSocket client;
         public TaskCompletionSource<bool> isReady;
         public ClientData clientData;
+        private CancellationTokenSource tokenSource;
         private BlockingCollection<string> messageQueue;
         private BlockingCollection<string> messageInbox;
 
@@ -35,6 +36,7 @@ namespace ShowdownSharp
                 clientData.battles = new Dictionary<string, Battle>();
             }
 
+            tokenSource = new CancellationTokenSource();
             messageQueue = new BlockingCollection<string>();
             messageInbox = new BlockingCollection<string>();
             isReady = new TaskCompletionSource<bool>();
@@ -57,6 +59,7 @@ namespace ShowdownSharp
                 clientData.battles = new Dictionary<string, Battle>();
             }
 
+            tokenSource = new CancellationTokenSource();
             messageQueue = new BlockingCollection<string>();
             messageInbox = new BlockingCollection<string>();
             isReady = new TaskCompletionSource<bool>();
@@ -76,7 +79,8 @@ namespace ShowdownSharp
         {
             if (client != null)
             {
-                await client.CloseAsync(WebSocketCloseStatus.Empty, "", CancellationToken.None);
+                if(client.State == WebSocketState.Open || client.State == WebSocketState.CloseReceived || client.State == WebSocketState.CloseSent)
+                    await client.CloseAsync(WebSocketCloseStatus.Empty, "", CancellationToken.None);
                 client.Dispose();
             }
         }
@@ -87,10 +91,10 @@ namespace ShowdownSharp
             {
                 await Initialize();
 
-                var sendTask = Task.Run(async () => await SendMessagesAsync(client));
-                var receiveTask = Task.Run(async () => await ReceiveMessagesAsync(client));
-                var inputTask = Task.Run(async () => await ParseInput());
-                var responseTask = Task.Run(async () => await ParseResponses());
+                var sendTask = Task.Run(async () => await SendMessagesAsync(client), tokenSource.Token);
+                var receiveTask = Task.Run(async () => await ReceiveMessagesAsync(client), tokenSource.Token);
+                var inputTask = Task.Run(async () => await ParseInput(), tokenSource.Token);
+                var responseTask = Task.Run(async () => await ParseResponses(), tokenSource.Token);
 
                 // Wait for either task to complete
                 await Task.WhenAny(sendTask, receiveTask, inputTask, responseTask);
@@ -101,6 +105,13 @@ namespace ShowdownSharp
                 await Close();
             }
             catch (Exception ex) { Console.WriteLine(ex.ToString()); } 
+        }
+
+        public void Stop()
+        {
+            tokenSource.Cancel();
+            Close();
+            return;
         }
 
         private async Task ParseInput()
